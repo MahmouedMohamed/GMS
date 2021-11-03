@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Models\Ability;
+use App\Http\Controllers\API\BaseController as BaseController;
+
 use Illuminate\Http\Request;
 
-class AbilityController extends Controller
+class ClientSubscriptionController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +32,10 @@ class AbilityController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Ability  $ability
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Ability $ability)
+    public function show($id)
     {
         //
     }
@@ -43,10 +44,10 @@ class AbilityController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Ability  $ability
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Ability $ability)
+    public function update(Request $request, $id)
     {
         //
     }
@@ -54,10 +55,10 @@ class AbilityController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Ability  $ability
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Ability $ability)
+    public function destroy($id)
     {
         //
     }

@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
+use App\Http\Controllers\API\BaseController as BaseController;
 
-use App\Models\TrainerSubscriptionInfo;
+use App\Models\Role;
 use Illuminate\Http\Request;
 
-class TrainerSubscriptionInfoController extends Controller
+class RoleController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +32,10 @@ class TrainerSubscriptionInfoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\TrainerSubscriptionInfo  $trainerSubscriptionInfo
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function show(TrainerSubscriptionInfo $trainerSubscriptionInfo)
+    public function show(Role $role)
     {
         //
     }
@@ -43,10 +44,10 @@ class TrainerSubscriptionInfoController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TrainerSubscriptionInfo  $trainerSubscriptionInfo
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TrainerSubscriptionInfo $trainerSubscriptionInfo)
+    public function update(Request $request, Role $role)
     {
         //
     }
@@ -54,10 +55,10 @@ class TrainerSubscriptionInfoController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\TrainerSubscriptionInfo  $trainerSubscriptionInfo
+     * @param  \App\Models\Role  $role
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TrainerSubscriptionInfo $trainerSubscriptionInfo)
+    public function destroy(Role $role)
     {
         //
     }

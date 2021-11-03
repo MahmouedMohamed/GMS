@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\API\BaseController as BaseController;
 
 use App\Models\GymSubscriptionInfo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
-class GymSubscriptionInfoController extends Controller
+class GymSubscriptionInfoController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +18,6 @@ class GymSubscriptionInfoController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -25,7 +28,6 @@ class GymSubscriptionInfoController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**

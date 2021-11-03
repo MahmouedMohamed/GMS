@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
+use App\Http\Controllers\API\BaseController as BaseController;
 
-use App\Models\TrainerShift;
+use App\Models\Ability;
 use Illuminate\Http\Request;
 
-class TrainerShiftController extends Controller
+class AbilityController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +32,10 @@ class TrainerShiftController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\TrainerShift  $trainerShift
+     * @param  \App\Models\Ability  $ability
      * @return \Illuminate\Http\Response
      */
-    public function show(TrainerShift $trainerShift)
+    public function show(Ability $ability)
     {
         //
     }
@@ -43,10 +44,10 @@ class TrainerShiftController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TrainerShift  $trainerShift
+     * @param  \App\Models\Ability  $ability
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TrainerShift $trainerShift)
+    public function update(Request $request, Ability $ability)
     {
         //
     }
@@ -54,10 +55,10 @@ class TrainerShiftController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\TrainerShift  $trainerShift
+     * @param  \App\Models\Ability  $ability
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TrainerShift $trainerShift)
+    public function destroy(Ability $ability)
     {
         //
     }
