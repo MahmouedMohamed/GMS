@@ -18,6 +18,12 @@ class GymSubscriptionInfoController extends BaseController
      */
     public function index()
     {
+        // return $this->sendResponse(
+        //     Cache::remember('gym-subscription-info', 60 * 60 * 24, function () {
+                return GymSubscriptionInfo::get();
+        //     }),
+        //     'Data Retrieved Successfully'
+        // );
     }
 
     /**
@@ -28,6 +34,16 @@ class GymSubscriptionInfoController extends BaseController
      */
     public function store(Request $request)
     {
+        $numberOfMonths = random_int(1, 12);
+        $cost = random_int(100, 1000);
+        $discount = random_int(1, 100);
+        return $this->sendResponse(GymSubscriptionInfo::create([
+            'id' => Str::uuid(),
+            'name' => strval($numberOfMonths) . ' Months Offer',
+            'number_of_months' => $numberOfMonths,
+            'cost' => $cost,
+            'discount' => $discount,
+        ]), 'Data Created Successfully');
     }
 
     /**
