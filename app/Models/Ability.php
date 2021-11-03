@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Ability extends Model
 {
     use HasFactory;
-    protected $fillable = ['name'];
+    protected $fillable = ['id', 'name'];
 
-    public function roles(){
+    public function roles()
+    {
         return $this->hasMany(Role::class);
     }
 }

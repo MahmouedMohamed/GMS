@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class TrainerSubscriptionInfo extends Model
 {
     use HasFactory;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'id',
+        'number_of_sessions',
+        'cost',
+        'deadline'
+    ];
 }
