@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\AdminController;
+use App\Http\Controllers\API\ClientSubscriptionController;
+use App\Http\Controllers\API\GymSubscriptionInfoController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,4 +26,9 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 
 Route::group(['middleware' => 'api_auth'], function () {
+    Route::get('/admin', [AdminController::class, 'generalAdminDashboard']);
+    Route::apiResource('/gym/subscribtions',GymSubscriptionInfoController::class);
+    Route::apiResource('/gym/subscribe',ClientSubscriptionController::class);
 });
+
+Route::post('/token/refresh',[TokensController::class,'refresh']);
