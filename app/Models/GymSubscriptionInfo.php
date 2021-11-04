@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class GymSubscriptionInfo extends Model
 {
     use HasFactory;
+    public $incrementing = false;
     protected $table = 'gym_subscriptions_info';
     /**
      * The attributes that are mass assignable.

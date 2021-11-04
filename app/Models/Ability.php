@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ability extends Model
 {
     use HasFactory;
+    public $incrementing = false;
     protected $fillable = ['id', 'name'];
 
     public function roles()

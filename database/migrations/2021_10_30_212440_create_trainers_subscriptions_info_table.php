@@ -15,6 +15,7 @@ class CreateTrainersSubscriptionsInfoTable extends Migration
     {
         Schema::create('trainers_subscriptions_info', function (Blueprint $table) {
             $table->uuid('id');
+            $table->primary('id');
             $table->integer('number_of_sessions');
             $table->double('cost');
             $table->integer('deadline');

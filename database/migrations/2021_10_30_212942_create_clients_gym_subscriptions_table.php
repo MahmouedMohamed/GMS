@@ -14,15 +14,17 @@ class CreateClientsGymSubscriptionsTable extends Migration
     public function up()
     {
         Schema::create('clients_gym_subscriptions', function (Blueprint $table) {
+            $table->string('client_id');
+            $table->string('gym_subscription_id');
             $table->primary(['client_id', 'gym_subscription_id']);
             // $table->uuid('client_id');
             // $table->uuid('gym_subscription_id');
-            $table->uuid('client_id')
+            $table->foreign('client_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->uuid('gym_subscription_id')
+            $table->foreign('gym_subscription_id')
                 ->references('id')
                 ->on('gym_subscriptions_info')
                 ->onUpdate('cascade')

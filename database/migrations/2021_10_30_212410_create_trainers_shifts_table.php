@@ -15,7 +15,9 @@ class CreateTrainersShiftsTable extends Migration
     {
         Schema::create('trainers_shifts', function (Blueprint $table) {
             $table->uuid('id');
-            $table->uuid('trainer_id')
+            $table->primary('id');
+            $table->string('trainer_id');
+            $table->foreign('trainer_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')

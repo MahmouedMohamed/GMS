@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Role extends Model
 {
     use HasFactory;
+    public $incrementing = false;
     protected $guarded=[];
 
     public function abilities()

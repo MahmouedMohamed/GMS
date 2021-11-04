@@ -14,16 +14,18 @@ class CreateRolesAbilitiesTable extends Migration
     public function up()
     {
         Schema::create('roles_abilities', function (Blueprint $table) {
+            $table->string('role_id');
+            $table->string('ability_id');
             $table->primary(['role_id', 'ability_id']);
             $table->unique(['role_id', 'ability_id']);
             // $table->uuid('role_id');
             // $table->uuid('ability_id');
-            $table->uuid('role_id')
+            $table->foreign('role_id')
                 ->references('id')
                 ->on('roles')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->uuid('ability_id')
+            $table->foreign('ability_id')
                 ->references('id')
                 ->on('abilities')
                 ->onUpdate('cascade')

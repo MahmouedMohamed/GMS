@@ -10,10 +10,13 @@ use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
+use Uuids;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory;
+
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -66,17 +69,13 @@ class User extends Authenticatable
     {
         return $this->abilities($ability);
     }
-    public function subscriptionInfo()
-    {
-        return $this->hasMany(TrainerSubscriptionInfo::class);
-    }
     public function gymSubscriptions()
     {
         return $this->hasMany(GymSubscriptionInfo::class);
     }
     public function shifts()
     {
-        return $this->hasMany(TrainerShift::class);
+        return $this->hasMany(TrainerShift::class,'trainer_id');
     }
     public function clients()
     {

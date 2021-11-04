@@ -14,21 +14,21 @@ class CreateTrainersClientsTable extends Migration
     public function up()
     {
         Schema::create('trainers_clients', function (Blueprint $table) {
+            $table->string('trainer_subscription_id');
+            $table->string('trainer_id');
+            $table->string('client_id');
             $table->primary(['trainer_id', 'client_id']);
-            // $table->uuid('trainer_id');
-            // $table->uuid('client_id');
-            // $table->uuid('trainer_subscription_id');
-            $table->uuid('trainer_id')
+            $table->foreign('trainer_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->uuid('client_id')
+            $table->foreign('client_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->uuid('trainer_subscription_id')
+            $table->foreign('trainer_subscription_id')
                 ->references('id')
                 ->on('trainers_subscriptions_info')
                 ->onUpdate('cascade')
@@ -40,7 +40,6 @@ class CreateTrainersClientsTable extends Migration
             $table->text('client_note')->nullable();
             $table->text('trainer_note')->nullable();
             $table->timestamps();
-
         });
     }
 

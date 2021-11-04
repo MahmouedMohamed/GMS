@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OauthAccessToken extends Model
 {
     use HasFactory;
+    public $incrementing = false;
     /**
      * The attributes that are mass assignable.
      *

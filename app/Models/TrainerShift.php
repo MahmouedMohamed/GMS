@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class TrainerShift extends Model
 {
     use HasFactory;
+
+    public $incrementing = false;
+    protected $table ='trainers_shifts';
     /**
      * The attributes that are mass assignable.
      *
@@ -17,10 +20,11 @@ class TrainerShift extends Model
         'id',
         'day',
         'from',
-        'to'
+        'to',
+        'trainer_id'
     ];
     public function trainer()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class,);
     }
 }

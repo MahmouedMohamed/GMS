@@ -15,10 +15,11 @@ class CreateGymSubscriptionsInfoTable extends Migration
     {
         Schema::create('gym_subscriptions_info', function (Blueprint $table) {
             $table->uuid('id');
+            $table->primary('id');
             $table->string('name');
             $table->integer('number_of_months');
             $table->double('cost');
-            $table->double('discount');
+            $table->double('discount')->nullable();
             $table->timestamps();
         });
     }

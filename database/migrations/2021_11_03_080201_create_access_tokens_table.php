@@ -15,7 +15,9 @@ class CreateAccessTokensTable extends Migration
     {
         Schema::create('oauth_access_tokens', function (Blueprint $table) {
             $table->uuid('id');
-            $table->uuid('user_id')
+            $table->primary('id');
+            $table->string('user_id');
+            $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('cascade')
