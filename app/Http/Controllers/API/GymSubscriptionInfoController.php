@@ -5,12 +5,15 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 use App\Models\GymSubscriptionInfo;
+use App\Traits\ControllersTraits\UserValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class GymSubscriptionInfoController extends BaseController
 {
+    use UserValidator;
     /**
      * Display a listing of the resource.
      *
@@ -18,12 +21,20 @@ class GymSubscriptionInfoController extends BaseController
      */
     public function index()
     {
-        // return $this->sendResponse(
-        //     Cache::remember('gym-subscription-info', 60 * 60 * 24, function () {
-                return GymSubscriptionInfo::get();
-        //     }),
-        //     'Data Retrieved Successfully'
-        // );
+        return $this->sendResponse(
+            Cache::remember('gym-subscription-info', 60 * 60 * 24, function () {
+                return GymSubscriptionInfo::select(
+                    'id as ID',
+                    'name as Name',
+                    'number_of_months as Number of Months',
+                    'cost as Cost',
+                    DB::raw('FORMAT(cost - (cost * NVL(discount,0) /100), 2) AS \'Cost After Discount\''),
+                    DB::raw('NVL(CONCAT(discount,\'%\'),\'0%\') AS Discount'),
+                    DB::raw('CASE WHEN `discount` IS NULL OR `discount` = 0 THEN false ELSE true END AS \'Has Discount\''),
+                )->get();
+            }),
+            'Data Retrieved Successfully'
+        );
     }
 
     /**
