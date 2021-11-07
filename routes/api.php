@@ -27,7 +27,7 @@ Route::post('/register', [UserController::class, 'register']);
 
 Route::group(['middleware' => 'api_auth'], function () {
     Route::get('/admin', [AdminController::class, 'generalAdminDashboard']);
-    Route::apiResource('/gym/subscribtions',GymSubscriptionInfoController::class);
+    Route::apiResource('/gym/subscriptions',GymSubscriptionInfoController::class);
     Route::apiResource('/gym/subscribe',ClientSubscriptionController::class);
 });
 
