@@ -69,9 +69,11 @@ class User extends Authenticatable
     {
         return $this->abilities($ability);
     }
-    public function gymSubscriptions()
+    public function gymSubscriptionPlans()
     {
-        return $this->hasMany(GymSubscriptionInfo::class);
+        return $this->belongsToMany(GymSubscriptionPlan::class, 'clients_gym_subscriptions', 'client_id', 'gym_subscription_plan_id')
+            ->withPivot('start', 'end')
+            ->withTimestamps();
     }
     public function shifts()
     {

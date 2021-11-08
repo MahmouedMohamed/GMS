@@ -22,6 +22,17 @@ class ClientGymSubscriptionController extends BaseController
      */
     public function index(Request $request)
     {
+        try {
+            $user = $this->userExists($request['userId']);
+            return $this->sendResponse(
+                $user->gymSubscriptionPlans()
+                    ->select('clients_gym_subscriptions.id','gym_subscriptions_plans.id as gym_subscription_plan_id', 'name', 'start', 'number_of_months', 'end')
+                    ->get(),
+                'Gym Subscriptions Retrieved Successfully'
+            );
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Not Found');
+        }
     }
 
     /**
@@ -32,6 +43,24 @@ class ClientGymSubscriptionController extends BaseController
      */
     public function store(Request $request)
     {
+        try {
+            $user = $this->userExists($request['userId']);
+            $gymSubscriptionPlan = $this->GymSubscriptionPlanExists($request['gymSubscriptionPlanId']);
+            $user->gymSubscriptionPlans()
+                ->attach(
+                    $request['gymSubscriptionPlanId'],
+                    array(
+                        'id' => Str::uuid(),
+                        'start' => Carbon::now(),
+                        'end' => Carbon::now()->addMonths($gymSubscriptionPlan->number_of_months)
+                    )
+                );
+            return $this->sendResponse('', 'You have Subscribed Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Not Found');
+        } catch (GymSubscriptionPlanNotFound $e) {
+            return $this->sendError('Gym Subscription Plan Not Found');
+        }
     }
 
     /**
