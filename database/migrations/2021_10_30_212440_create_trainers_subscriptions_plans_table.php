@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrainersSubscriptionsInfoTable extends Migration
+class CreateTrainersSubscriptionsPlansTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTrainersSubscriptionsInfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('trainers_subscriptions_info', function (Blueprint $table) {
+        Schema::create('trainers_subscriptions_plans', function (Blueprint $table) {
             $table->uuid('id');
             $table->primary('id');
             $table->integer('number_of_sessions');
@@ -30,6 +30,6 @@ class CreateTrainersSubscriptionsInfoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('trainers_subscriptions_info');
+        Schema::dropIfExists('trainers_subscriptions_plans');
     }
 }

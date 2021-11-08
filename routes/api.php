@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\ClientSubscriptionController;
 use App\Http\Controllers\API\GymSubscriptionPlanController;
+use App\Http\Controllers\API\TrainerSubscriptionPlanController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -25,11 +26,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 
-Route::group(['middleware' => 'api_auth'], function () {
+// Route::group(['middleware' => 'api_auth'], function () {
     Route::get('/admin', [AdminController::class, 'generalAdminDashboard']);
-    Route::apiResource('/gym/subscribtions',GymSubscriptionInfoController::class);
-    Route::apiResource('/gym/subscribe',ClientSubscriptionController::class);
-});
     Route::apiResource('/gym/subscriptions',GymSubscriptionPlanController::class);
+    Route::apiResource('/trainer/subscriptions',TrainerSubscriptionPlanController::class);
 
 Route::post('/token/refresh',[TokensController::class,'refresh']);
