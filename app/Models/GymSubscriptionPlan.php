@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class GymSubscriptionInfo extends Model
+class GymSubscriptionPlan extends Model
 {
     use HasFactory;
     public $incrementing = false;
-    protected $table = 'gym_subscriptions_info';
+    protected $hidden = ['pivot'];
+    protected $table = 'gym_subscriptions_plans';
     /**
      * The attributes that are mass assignable.
      *
@@ -23,8 +24,9 @@ class GymSubscriptionInfo extends Model
         'discount'
     ];
 
-    public function clients()
+    public function subscribers()
     {
-        return $this->belongsToMany(User::class, 'clients_gym_subscriptions', 'gym_subscription_id', 'client_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'clients_gym_subscriptions', 'gym_subscription_plan_id', 'client_id')->withPivot('start','end')->withTimestamps();
+        // return $this->hasMany(User::class,'client_id','gym_subscription_plan_id');
     }
 }
