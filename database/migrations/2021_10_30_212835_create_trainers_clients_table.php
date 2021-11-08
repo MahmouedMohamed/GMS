@@ -14,10 +14,11 @@ class CreateTrainersClientsTable extends Migration
     public function up()
     {
         Schema::create('trainers_clients', function (Blueprint $table) {
-            $table->string('trainer_subscription_id');
+            $table->uuid('id');
+            $table->primary('id');
+            $table->string('trainer_subscription_plan_id');
             $table->string('trainer_id');
             $table->string('client_id');
-            $table->primary(['trainer_id', 'client_id']);
             $table->foreign('trainer_id')
                 ->references('id')
                 ->on('users')
@@ -28,9 +29,9 @@ class CreateTrainersClientsTable extends Migration
                 ->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreign('trainer_subscription_id')
+            $table->foreign('trainer_subscription_plan_id')
                 ->references('id')
-                ->on('trainers_subscriptions_info')
+                ->on('trainers_subscriptions_plans')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->dateTime('session_from');

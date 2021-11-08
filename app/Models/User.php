@@ -81,11 +81,15 @@ class User extends Authenticatable
     }
     public function clients()
     {
-        return $this->hasMany(User::class, 'client_id', 'trainer_id');
+        return $this->belongsToMany(User::class, 'trainers_clients', 'client_id', 'trainer_id')
+            ->withPivot('session_from', 'session_to', 'left_sessions', 'session_done', 'client_note', 'trainer_note')
+            ->withTimestamps();
     }
     public function trainers()
     {
-        return $this->belongsToMany(User::class, 'trainers_clients', 'trainer_id', 'client_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'trainers_clients', 'trainer_id', 'client_id')
+            ->withPivot('session_from', 'session_to', 'left_sessions', 'session_done', 'client_note', 'trainer_note')
+            ->withTimestamps();
     }
     public function accessTokens()
     {
