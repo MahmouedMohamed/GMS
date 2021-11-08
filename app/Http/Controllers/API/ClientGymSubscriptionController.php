@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\GymSubscriptionPlanNotFound;
+use App\Exceptions\UserNotFound;
 use App\Http\Controllers\API\BaseController as BaseController;
-
+use App\Traits\ControllersTraits\UserValidator;
+use App\Traits\ControllersTraits\GymSubscriptionPlanValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
-class ClientSubscriptionController extends BaseController
+class ClientGymSubscriptionController extends BaseController
 {
+    use UserValidator, GymSubscriptionPlanValidator;
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
     }
 
     /**
@@ -26,18 +32,6 @@ class ClientSubscriptionController extends BaseController
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
     }
 
     /**

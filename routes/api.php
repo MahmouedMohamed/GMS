@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AdminController;
-use App\Http\Controllers\API\ClientSubscriptionController;
+use App\Http\Controllers\API\ClientGymSubscriptionController;
 use App\Http\Controllers\API\GymSubscriptionPlanController;
 use App\Http\Controllers\API\TrainerSubscriptionPlanController;
 use App\Http\Controllers\API\UserController;
@@ -29,6 +29,7 @@ Route::post('/register', [UserController::class, 'register']);
 // Route::group(['middleware' => 'api_auth'], function () {
     Route::get('/admin', [AdminController::class, 'generalAdminDashboard']);
     Route::apiResource('/gym/subscriptions',GymSubscriptionPlanController::class);
+    Route::apiResource('/gym/subscribe',ClientGymSubscriptionController::class);
     Route::apiResource('/trainer/subscriptions',TrainerSubscriptionPlanController::class);
 
 Route::post('/token/refresh',[TokensController::class,'refresh']);
