@@ -77,7 +77,7 @@ class User extends Authenticatable
     }
     public function shifts()
     {
-        return $this->hasMany(TrainerShift::class,'trainer_id');
+        return $this->hasMany(TrainerShift::class, 'trainer_id');
     }
     public function clients()
     {

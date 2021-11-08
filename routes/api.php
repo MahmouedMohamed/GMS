@@ -4,7 +4,9 @@ use App\Http\Controllers\API\AdminController;
 use App\Http\Controllers\API\ClientGymSubscriptionController;
 use App\Http\Controllers\API\ClientTrainerSubscriptionController;
 use App\Http\Controllers\API\GymSubscriptionPlanController;
+use App\Http\Controllers\API\TrainerShiftController;
 use App\Http\Controllers\API\TrainerSubscriptionPlanController;
+use App\Http\Controllers\API\TokensController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -33,5 +35,7 @@ Route::post('/register', [UserController::class, 'register']);
     Route::apiResource('/gym/subscribe',ClientGymSubscriptionController::class);
     Route::apiResource('/trainer/subscriptions',TrainerSubscriptionPlanController::class);
     Route::apiResource('/trainer/subscribe',ClientTrainerSubscriptionController::class);
+    Route::apiResource('/trainer/shifts',TrainerShiftController::class);
+// });
 
 Route::post('/token/refresh',[TokensController::class,'refresh']);
