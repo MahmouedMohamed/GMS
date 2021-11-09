@@ -4,22 +4,26 @@ namespace App\Traits\ControllersTraits;
 
 use App\Exceptions\GymSubscriptionPlanNotFound;
 use App\Models\GymSubscriptionPlan;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use App\Traits\ValidatorLanguagesSupport;
 
 trait GymSubscriptionPlanValidator
 {
-
+    use ValidatorLanguagesSupport;
     /**
      * Returns If User exists or not.
      *
      * @param String $id
      * @return mixed
      */
-    public function GymSubscriptionPlanExists($id)
+    public function gymSubscriptionPlanExists($id)
     {
-        $user = GymSubscriptionPlan::find($id);
-        if (!$user)
+        $gymSubscriptionPlan = GymSubscriptionPlan::find($id);
+        if (!$gymSubscriptionPlan)
             throw new GymSubscriptionPlanNotFound();
-        return $user;
+        return $gymSubscriptionPlan;
+    }
 
     public function validateGymSubscriptionPlanData(Request $request, String $related)
     {
