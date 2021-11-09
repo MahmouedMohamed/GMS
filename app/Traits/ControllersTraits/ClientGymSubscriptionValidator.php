@@ -21,8 +21,8 @@ trait ClientGymSubscriptionValidator
     public function clientGymSubscriptionExists($id)
     {
         $clientGymSubscribedPlan =  DB::table('clients_gym_subscriptions')
-            ->where('id', '=', $id)->first();
-        if (!$clientGymSubscribedPlan)
+            ->where('id', '=', $id);
+        if (!$clientGymSubscribedPlan->first())
             throw new ClientGymSubscriptionNotFound();
         return $clientGymSubscribedPlan;
     }

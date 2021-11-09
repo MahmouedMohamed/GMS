@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Exceptions\ClientAlreadySubscribedToGymSubscription;
+use App\Exceptions\ClientGymSubscriptionNotFound;
 use App\Exceptions\GymSubscriptionPlanNotFound;
 use App\Exceptions\UserNotFound;
 use App\Http\Controllers\API\BaseController as BaseController;
@@ -88,17 +89,18 @@ class ClientGymSubscriptionController extends BaseController
     public function update(Request $request, $id)
     {
         try {
+            $clientGymSubscribedPlan = $this->clientGymSubscriptionExists($id);
             $user = $this->userExists($request['userId']);
-            $clientGymSubscribedPlan = $this->clientGymSubscriptionExists($request['clientGymSubscriptionId']);
+            $gymSubscriptionPlan = $this->gymSubscriptionPlanExists($request['gymSubscriptionPlanId']);
             switch ($request['request']) {
                 case 'extend':
-                    // ToDo: Extend end
-                    // $clientGymSubscribedPlan->
+                    $clientGymSubscribedPlan
+                        ->update(['end' => DB::raw("end + INTERVAL " . $gymSubscriptionPlan->number_of_months . " MONTH")]);
                     return $this->sendResponse('', 'You have Extended Subscription Successfully');
                     break;
                 case 'cancel':
-                    // ToDo: Extend make End = Now
-                    // $clientGymSubscribedPlan->
+                    $clientGymSubscribedPlan
+                        ->update(['end' => Carbon::now()]);
                     return $this->sendResponse('', 'You have Cancelled Subscription Successfully');
                     break;
                 default:
@@ -109,6 +111,8 @@ class ClientGymSubscriptionController extends BaseController
             return $this->sendError('User Not Found');
         } catch (GymSubscriptionPlanNotFound $e) {
             return $this->sendError('Gym Subscription Plan Not Found');
+        } catch (ClientGymSubscriptionNotFound $e) {
+            return $this->sendError('Client Gym Subscription Not Found');
         }
     }
 
