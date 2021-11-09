@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\ClientAlreadySubscribedToGymSubscription;
 use App\Exceptions\GymSubscriptionPlanNotFound;
 use App\Exceptions\UserNotFound;
 use App\Http\Controllers\API\BaseController as BaseController;
+use App\Traits\ControllersTraits\ClientGymSubscriptionValidator;
 use App\Traits\ControllersTraits\UserValidator;
 use App\Traits\ControllersTraits\GymSubscriptionPlanValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ClientGymSubscriptionController extends BaseController
 {
-    use UserValidator, GymSubscriptionPlanValidator;
+    use UserValidator, GymSubscriptionPlanValidator, ClientGymSubscriptionValidator;
     /**
      * Display a listing of the resource.
      *
@@ -45,7 +48,8 @@ class ClientGymSubscriptionController extends BaseController
     {
         try {
             $user = $this->userExists($request['userId']);
-            $gymSubscriptionPlan = $this->GymSubscriptionPlanExists($request['gymSubscriptionPlanId']);
+            $gymSubscriptionPlan = $this->gymSubscriptionPlanExists($request['gymSubscriptionPlanId']);
+            $this->clientAlreadyOnPlan($user);
             $user->gymSubscriptionPlans()
                 ->attach(
                     $request['gymSubscriptionPlanId'],
@@ -60,6 +64,8 @@ class ClientGymSubscriptionController extends BaseController
             return $this->sendError('User Not Found');
         } catch (GymSubscriptionPlanNotFound $e) {
             return $this->sendError('Gym Subscription Plan Not Found');
+        } catch (ClientAlreadySubscribedToGymSubscription $e) {
+            return $this->sendError('Client Already Subscribed to Another Plan');
         }
     }
 
