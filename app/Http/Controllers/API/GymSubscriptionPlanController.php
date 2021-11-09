@@ -116,10 +116,10 @@ class GymSubscriptionPlanController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\GymSubscriptionPlan  $gymSubscriptionPlan
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(GymSubscriptionPlan $gymSubscriptionPlan)
+    public function destroy(Request $request, String $id)
     {
         try {
             //ToDo: For Authorization
