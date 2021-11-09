@@ -37,7 +37,16 @@ class ClientGymSubscriptionController extends BaseController
             return $this->sendError('User Not Found');
         }
     }
-
+    /**
+     * Display the specified resource.
+     *
+     * @param  String  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(String $id)
+    {
+        return $this->sendError('Not Implemented', '', 404);
+    }
     /**
      * Store a newly created resource in storage.
      *
