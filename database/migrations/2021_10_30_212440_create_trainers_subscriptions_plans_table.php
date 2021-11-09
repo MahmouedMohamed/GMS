@@ -19,6 +19,12 @@ class CreateTrainersSubscriptionsPlansTable extends Migration
             $table->integer('number_of_sessions');
             $table->double('cost');
             $table->integer('deadline');
+            $table->string('created_by');
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }

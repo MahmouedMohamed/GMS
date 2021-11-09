@@ -21,7 +21,8 @@ class GymSubscriptionPlan extends Model
         'name',
         'number_of_months',
         'cost',
-        'discount'
+        'discount',
+        'created_by'
     ];
 
     public function subscribers()

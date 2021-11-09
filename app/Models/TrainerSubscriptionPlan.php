@@ -19,6 +19,7 @@ class TrainerSubscriptionPlan extends Model
         'id',
         'number_of_sessions',
         'cost',
-        'deadline'
+        'deadline',
+        'created_by'
     ];
 }

@@ -20,6 +20,12 @@ class CreateGymSubscriptionsPlansTable extends Migration
             $table->integer('number_of_months');
             $table->double('cost');
             $table->double('discount')->nullable();
+            $table->string('created_by');
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
