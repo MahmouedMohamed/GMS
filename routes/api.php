@@ -36,6 +36,7 @@ Route::post('/register', [UserController::class, 'register']);
     Route::apiResource('/trainer/subscriptions',TrainerSubscriptionPlanController::class);
     Route::apiResource('/trainer/subscribe',ClientTrainerSubscriptionController::class);
     Route::apiResource('/trainer/shifts',TrainerShiftController::class);
+    Route::get('/trainer/{id}/shifts',[TrainerShiftController::class,'getSpecificTrainerShifts']);
 // });
 
 Route::post('/token/refresh',[TokensController::class,'refresh']);

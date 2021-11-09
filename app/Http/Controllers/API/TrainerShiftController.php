@@ -71,6 +71,22 @@ class TrainerShiftController extends BaseController
     }
 
     /**
+     * Display a specified resource related to Trainer.
+     *
+     * @param  String  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getSpecificTrainerShifts(String $id)
+    {
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($id);
+            return $this->sendResponse($user->shifts, 'Data Retrieved Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        }
+    }
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
