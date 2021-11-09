@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Exceptions\GymSubscriptionPlanNotFound;
 use App\Exceptions\UserNotFound;
 use App\Http\Controllers\API\BaseController as BaseController;
-
 use App\Models\GymSubscriptionPlan;
 use App\Traits\ControllersTraits\GymSubscriptionPlanValidator;
 use App\Traits\ControllersTraits\UserValidator;
@@ -70,12 +69,17 @@ class GymSubscriptionPlanController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\GymSubscriptionPlan  $gymSubscriptionPlan
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(GymSubscriptionPlan $gymSubscriptionPlan)
+    public function show(String $id)
     {
-        //
+        try {
+            $gymSubscriptionPlan = $this->gymSubscriptionPlanExists($id);
+            return $this->sendResponse($gymSubscriptionPlan, 'Data Retrieved Successfully');
+        } catch (GymSubscriptionPlanNotFound $e) {
+            return $this->sendError('Gym Subscription Plan Not Found');
+        }
     }
 
     /**
