@@ -29,7 +29,7 @@ class ClientGymSubscriptionController extends BaseController
             $user = $this->userExists($request['userId']);
             return $this->sendResponse(
                 $user->gymSubscriptionPlans()
-                    ->select('clients_gym_subscriptions.id','gym_subscriptions_plans.id as gym_subscription_plan_id', 'name', 'start', 'number_of_months', 'end')
+                    ->select('clients_gym_subscriptions.id', 'gym_subscriptions_plans.id as gym_subscription_plan_id', 'name', 'start', 'number_of_months', 'end')
                     ->get(),
                 'Gym Subscriptions Retrieved Successfully'
             );
@@ -87,7 +87,29 @@ class ClientGymSubscriptionController extends BaseController
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $user = $this->userExists($request['userId']);
+            $clientGymSubscribedPlan = $this->clientGymSubscriptionExists($request['clientGymSubscriptionId']);
+            switch ($request['request']) {
+                case 'extend':
+                    // ToDo: Extend end
+                    // $clientGymSubscribedPlan->
+                    return $this->sendResponse('', 'You have Extended Subscription Successfully');
+                    break;
+                case 'cancel':
+                    // ToDo: Extend make End = Now
+                    // $clientGymSubscribedPlan->
+                    return $this->sendResponse('', 'You have Cancelled Subscription Successfully');
+                    break;
+                default:
+                    return $this->sendError('Invalid Data', '', 400);
+                    break;
+            }
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Not Found');
+        } catch (GymSubscriptionPlanNotFound $e) {
+            return $this->sendError('Gym Subscription Plan Not Found');
+        }
     }
 
     /**
