@@ -70,12 +70,17 @@ class TrainerShiftController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\TrainerShift  $trainerShift
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TrainerShift $trainerShift)
+    public function show(String $id)
     {
-        //
+        try {
+            $trainerShift = $this->TrainerShiftExists($id);
+            return $this->sendResponse($trainerShift, 'Data Retrieved Successfully');
+        } catch (TrainerShiftNotFound $e) {
+            return $this->sendError('Trainer Shift Not Found');
+        }
     }
 
     /**
