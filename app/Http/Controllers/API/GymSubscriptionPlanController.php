@@ -89,56 +89,16 @@ class GymSubscriptionPlanController extends BaseController
      */
     public function destroy(GymSubscriptionPlan $gymSubscriptionPlan)
     {
-        //
-    }
-    public function validateShiftData(Request $request, String $related)
-    {
-        $rules = null;
-        switch ($related) {
-            case 'store':
-                $rules = [
-                    'name' => 'string',
-                    'number_of_months' => 'required|integer',
-                    'cost' => 'required|numeric|min:1',
-                    'discount' => 'required|numeric|min:0|max:100'
-                ];
-                break;
-            case 'update':
-                $rules = [
-                    'name' => 'string',
-                    'number_of_months' => 'required|integer',
-                    'cost' => 'required|numeric|min:1',
-                    'discount' => 'required|numeric|min:0|max:100'
-                ];
-                break;
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($request['userId']);
+            $gymSubscriptionPlan = $this->gymSubscriptionPlanExists($id);
+            $gymSubscriptionPlan->delete();
+            return $this->sendResponse('', 'Data Deleted Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        } catch (GymSubscriptionPlanNotFound $e) {
+            return $this->sendError('Gym Subscription Plan Not Found');
         }
-        $messages = [];
-        // if ($request['language'] != null)
-        //     $messages = $this->getValidatorMessagesBasedOnLanguage($request['language']);
-        return Validator::make($request->all(), $rules, $messages);
-    }
-
-    public function getValidatorMessagesBasedOnLanguage(string $language)
-    {
-        if ($language == 'En')
-            return [
-                'required' => 'This field is required',
-                'min' => 'Wrong value, minimum value is :min',
-                'max' => 'Wrong value, maximum value is :max',
-                'integer' => 'Wrong value, supports only real numbers',
-                'in' => 'Wrong value, supported values are :values',
-                'numeric' => 'Wrong value, supports only numeric numbers',
-            ];
-        else if ($language == 'Ar')
-            return [
-                'required' => 'هذا الحقل مطلوب',
-                'min' => 'قيمة خاطئة، أقل قيمة هي :min',
-                'max' => 'قيمة خاطئة أعلي قيمة هي :max',
-                'integer' => 'قيمة خاطئة، فقط يمكن قبول الأرقام فقط',
-                'in' => 'قيمة خاطئة، القيم المتاحة هي :values',
-                'image' => 'قيمة خاطئة، يمكن قبول الصور فقط',
-                'mimes' => 'يوجد خطأ في النوع، الأنواع المتاحة هي :values',
-                'numeric' => 'قيمة خاطئة، يمكن قبول الأرقام فقط',
-            ];
     }
 }
