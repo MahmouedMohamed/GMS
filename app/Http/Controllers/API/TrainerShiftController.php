@@ -117,28 +117,18 @@ class TrainerShiftController extends BaseController
      * @param  \App\Models\TrainerShift  $trainerShift
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TrainerShift $trainerShift)
+    public function destroy(Request $request, String $id)
     {
-        //
-    }
-    public function validateShiftData(Request $request, String $related)
-    {
-        $rules = null;
-        switch ($related) {
-            case 'store':
-                $rules = [
-                    'day' => 'required|in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday',
-                    'from' => 'required|date_format:h:i:s',
-                    'to' => 'required|date_format:h:i:s',
-                ];
-                break;
-            case 'update':
-                $rules = [
-                    'day' => 'required|in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday',
-                    'from' => 'required|date',
-                    'to' => 'required|date',
-                ];
-                break;
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($request['userId']);
+            $trainerShift = $this->TrainerShiftExists($id);
+            $trainerShift->delete();
+            return $this->sendResponse('', 'Data Deleted Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        } catch (TrainerShiftNotFound $e) {
+            return $this->sendError('Trainer Shift Not Found');
         }
         $messages = [];
         // if ($request['language'] != null)
