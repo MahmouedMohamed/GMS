@@ -21,17 +21,25 @@ class TrainerShiftController extends BaseController
      */
     public function index()
     {
-        return TrainerShift::
-            //     select(
-            //     'id as ID',
-            //     'name as Name',
-            //     'number_of_months as Number of Months',
-            //     'cost as Cost',
-            //     DB::raw('FORMAT(cost - (cost * NVL(discount,0) /100), 2) AS \'Cost After Discount\''),
-            //     DB::raw('NVL(CONCAT(discount,\'%\'),\'0%\') AS Discount'),
-            //     DB::raw('CASE WHEN `discount` IS NULL OR `discount` = 0 THEN false ELSE true END AS \'Has Discount\''),
-            // )->
-            get();
+        $currentPage = request()->get('page', 1);
+        return $this->sendResponse(
+            Cache::remember('trainers-shifts-' . $currentPage, 60 * 60 * 24, function () {
+                return TrainerShift::join('users', 'users.id', 'trainers_shifts.trainer_id')
+                    ->select(
+                        'trainers_shifts.id AS ID',
+                        'trainers_shifts.day',
+                        'trainers_shifts.from',
+                        'trainers_shifts.to',
+                        'users.id AS Trainer ID',
+                        'users.name AS Trainer Name',
+                        'users.gender AS Trainer Gender',
+                        'users.phone_number AS Trainer Phone Number',
+                    )
+                    ->oldest('trainers_shifts.day')
+                    ->paginate(8);
+            }),
+            'Data Retrieved Successfully'
+        );
     }
 
     /**
