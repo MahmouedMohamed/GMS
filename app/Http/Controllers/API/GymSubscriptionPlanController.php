@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\GymSubscriptionPlanNotFound;
+use App\Exceptions\UserNotFound;
 use App\Http\Controllers\API\BaseController as BaseController;
 
 use App\Models\GymSubscriptionPlan;
+use App\Traits\ControllersTraits\GymSubscriptionPlanValidator;
 use App\Traits\ControllersTraits\UserValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class GymSubscriptionPlanController extends BaseController
 {
-    use UserValidator;
+    use UserValidator, GymSubscriptionPlanValidator;
     /**
      * Display a listing of the resource.
      *
@@ -46,16 +48,23 @@ class GymSubscriptionPlanController extends BaseController
      */
     public function store(Request $request)
     {
-        $numberOfMonths = random_int(1, 12);
-        $cost = random_int(100, 1000);
-        $discount = random_int(1, 100);
-        return $this->sendResponse(GymSubscriptionPlan::create([
-            'id' => Str::uuid(),
-            'name' => strval($numberOfMonths) . ' Months Offer',
-            'number_of_months' => $numberOfMonths,
-            'cost' => $cost,
-            'discount' => $discount,
-        ]), 'Data Created Successfully');
+        try {
+            $user = $this->userExists($request['userId']);
+            $validated = $this->validateGymSubscriptionPlanData($request, 'store');
+            if ($validated->fails()) {
+                return $this->sendError('InvalidData', $validated->messages(), 400);
+            }
+            return $this->sendResponse(GymSubscriptionPlan::create([
+                'id' => Str::uuid(),
+                'name' => strval($request['numberOfMonths']) . ' Months Offer',
+                'number_of_months' => $request['numberOfMonths'],
+                'cost' => $request['cost'],
+                'discount' => $request['discount'],
+                'created_by' => $user->id
+            ]), 'Data Created Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        }
     }
 
     /**
