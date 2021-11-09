@@ -86,12 +86,31 @@ class GymSubscriptionPlanController extends BaseController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\GymSubscriptionPlan  $gymSubscriptionPlan
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, GymSubscriptionPlan $gymSubscriptionPlan)
+    public function update(Request $request, String $id)
     {
-        //
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($request['userId']);
+            $gymSubscriptionPlan = $this->gymSubscriptionPlanExists($id);
+            $validated = $this->validateGymSubscriptionPlanData($request, 'update');
+            if ($validated->fails()) {
+                return $this->sendError('InvalidData', $validated->messages(), 400);
+            }
+            $gymSubscriptionPlan->update([
+                'name' => strval($request['numberOfMonths']) . ' Months Offer',
+                'number_of_months' => $request['numberOfMonths'],
+                'cost' => $request['cost'],
+                'discount' => $request['discount'],
+            ]);
+            return $this->sendResponse("", 'Data Updated Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        } catch (GymSubscriptionPlanNotFound $e) {
+            return $this->sendError('Gym Subscription Plan Not Found');
+        }
     }
 
     /**
