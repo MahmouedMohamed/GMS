@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\GymSubscriptionPlan;
 use App\Models\TrainerShift;
+use App\Models\TrainerSubscriptionPlan;
 use App\Observers\GymSubscriptionPlanObserver;
 use App\Observers\TrainerShiftObserver;
+use App\Observers\TrainerSubscriptionPlanObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -32,6 +34,7 @@ class EventServiceProvider extends ServiceProvider
     {
         GymSubscriptionPlan::observe(GymSubscriptionPlanObserver::class);
 
+        TrainerSubscriptionPlan::observe(TrainerSubscriptionPlanObserver::class);
         TrainerShift::observe(TrainerShiftObserver::class);
     }
 }
