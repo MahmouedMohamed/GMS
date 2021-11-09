@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Exceptions\TrainerSubscriptionPlanNotFound;
 use App\Exceptions\UserNotFound;
 use App\Http\Controllers\API\BaseController as BaseController;
-
 use App\Models\trainerSubscriptionPlan;
+use App\Traits\ControllersTraits\TrainerSubscriptionPlanValidator;
 use App\Traits\ControllersTraits\UserValidator;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class TrainerSubscriptionPlanController extends BaseController
 {
-    use UserValidator;
+    use UserValidator, TrainerSubscriptionPlanValidator;
     /**
      * Display a listing of the resource.
      *
@@ -21,7 +23,20 @@ class TrainerSubscriptionPlanController extends BaseController
      */
     public function index()
     {
-        //
+        return $this->sendResponse(
+            Cache::remember('trainers-subscriptions-plans', 60 * 60 * 24, function () {
+                return
+                    TrainerSubscriptionPlan
+                    ::select(
+                        'id as ID',
+                        'number_of_sessions as Number of Sessions',
+                        'cost as Cost',
+                        DB::raw('CONCAT(deadline,\' Weeks\') AS Deadline'),
+                        DB::raw('CONCAT(deadline,CASE WHEN `deadline` IS NULL OR `deadline` = 1 THEN \' Week\' ELSE \' Weeks\' END) AS Deadline'),
+                    )->get();
+            }),
+            'Data Retrieved Successfully'
+        );
     }
 
     /**
@@ -33,16 +48,17 @@ class TrainerSubscriptionPlanController extends BaseController
     public function store(Request $request)
     {
         try {
-            // $user = $this->userExists($request['userId']);
-            $validated = $this->validateShiftData($request, 'store');
+            $user = $this->userExists($request['userId']);
+            $validated = $this->validateTrainerSubscriptionPlanData($request, 'store');
             if ($validated->fails()) {
                 return $this->sendError('InvalidData', $validated->messages(), 400);
             }
             return $this->sendResponse(TrainerSubscriptionPlan::create([
                 'id' => Str::uuid(),
-                'number_of_sessions' => $request['number_of_sessions'],
+                'number_of_sessions' => $request['numberOfSessions'],
                 'cost' => $request['cost'],
                 'deadline' => $request['deadline'],
+                'created_by' => $user->id
             ]), 'Data Created Successfully');
         } catch (UserNotFound $e) {
             return $this->sendError('UserNotFound');
@@ -52,82 +68,68 @@ class TrainerSubscriptionPlanController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\TrainerSubscriptionPlan  $trainerSubscriptionPlan
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TrainerSubscriptionPlan $trainerSubscriptionPlan)
+    public function show(String $id)
     {
-        //
+        try {
+            $trainerSubscriptionPlan = $this->TrainerSubscriptionPlanExists($id);
+            return $this->sendResponse($trainerSubscriptionPlan, 'Data Retrieved Successfully');
+        } catch (TrainerSubscriptionPlanNotFound $e) {
+            return $this->sendError('Trainer Subscription Plan Not Found');
+        }
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\TrainerSubscriptionPlan  $trainerSubscriptionPlan
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TrainerSubscriptionPlan $trainerSubscriptionPlan)
+    public function update(Request $request, String $id)
     {
-        //
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($request['userId']);
+            $trainerSubscriptionPlan = $this->TrainerSubscriptionPlanExists($id);
+            $validated = $this->validateTrainerSubscriptionPlanData($request, 'update');
+            if ($validated->fails()) {
+                return $this->sendError('InvalidData', $validated->messages(), 400);
+            }
+            $trainerSubscriptionPlan->update([
+                'number_of_sessions' => $request['numberOfSessions'],
+                'cost' => $request['cost'],
+                'deadline' => $request['deadline'],
+            ]);
+            return $this->sendResponse('', 'Data Updated Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        } catch (TrainerSubscriptionPlanNotFound $e) {
+            return $this->sendError('Trainer Subscription Plan Not Found');
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\TrainerSubscriptionPlan  $trainerSubscriptionPlan
+     * @param  \Illuminate\Http\Request  $request
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(TrainerSubscriptionPlan $trainerSubscriptionPlan)
+    public function destroy(Request $request, String $id)
     {
-        //
-    }
-    public function validateShiftData(Request $request, String $related)
-    {
-        $rules = null;
-        switch ($related) {
-            case 'store':
-                $rules = [
-                    'number_of_sessions' => 'required|integer|min:1',
-                    'cost' => 'required|numeric|min:1',
-                    'deadline' => 'required|integer|min:1|max:44', //44 Weeks in the year
-                ];
-                break;
-            case 'update':
-                $rules = [
-                    'number_of_sessions' => 'required|integer|min:1',
-                    'cost' => 'required|numeric|min:1',
-                    'deadline' => 'required|integer|min:1|max:44', //44 Weeks in the year
-                ];
-                break;
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($request['userId']);
+            $trainerSubscriptionPlan = $this->TrainerSubscriptionPlanExists($id);
+            $trainerSubscriptionPlan->delete();
+            return $this->sendResponse('', 'Data Deleted Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        } catch (TrainerSubscriptionPlanNotFound $e) {
+            return $this->sendError('Trainer Subscription Plan Not Found');
         }
-        $messages = [];
-        // if ($request['language'] != null)
-        //     $messages = $this->getValidatorMessagesBasedOnLanguage($request['language']);
-        return Validator::make($request->all(), $rules, $messages);
-    }
-
-    public function getValidatorMessagesBasedOnLanguage(string $language)
-    {
-        if ($language == 'En')
-            return [
-                'required' => 'This field is required',
-                'min' => 'Wrong value, minimum value is :min',
-                'max' => 'Wrong value, maximum value is :max',
-                'integer' => 'Wrong value, supports only real numbers',
-                'in' => 'Wrong value, supported values are :values',
-                'numeric' => 'Wrong value, supports only numeric numbers',
-            ];
-        else if ($language == 'Ar')
-            return [
-                'required' => 'هذا الحقل مطلوب',
-                'min' => 'قيمة خاطئة، أقل قيمة هي :min',
-                'max' => 'قيمة خاطئة أعلي قيمة هي :max',
-                'integer' => 'قيمة خاطئة، فقط يمكن قبول الأرقام فقط',
-                'in' => 'قيمة خاطئة، القيم المتاحة هي :values',
-                'image' => 'قيمة خاطئة، يمكن قبول الصور فقط',
-                'mimes' => 'يوجد خطأ في النوع، الأنواع المتاحة هي :values',
-                'numeric' => 'قيمة خاطئة، يمكن قبول الأرقام فقط',
-            ];
     }
 }
