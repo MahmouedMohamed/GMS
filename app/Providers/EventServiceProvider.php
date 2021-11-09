@@ -3,11 +3,12 @@
 namespace App\Providers;
 
 use App\Models\GymSubscriptionPlan;
+use App\Models\TrainerShift;
 use App\Observers\GymSubscriptionPlanObserver;
+use App\Observers\TrainerShiftObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -31,5 +32,6 @@ class EventServiceProvider extends ServiceProvider
     {
         GymSubscriptionPlan::observe(GymSubscriptionPlanObserver::class);
 
+        TrainerShift::observe(TrainerShiftObserver::class);
     }
 }
