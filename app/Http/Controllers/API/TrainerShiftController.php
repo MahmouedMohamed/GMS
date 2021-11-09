@@ -106,9 +106,27 @@ class TrainerShiftController extends BaseController
      * @param  \App\Models\TrainerShift  $trainerShift
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, TrainerShift $trainerShift)
+    public function update(Request $request, String $id)
     {
-        //
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($request['userId']);
+            $trainerShift = $this->TrainerShiftExists($id);
+            $validated = $this->validateTrainerShiftData($request, 'update');
+            if ($validated->fails()) {
+                return $this->sendError('InvalidData', $validated->messages(), 400);
+            }
+            $trainerShift->update([
+                'day' => $request['day'],
+                'from' => $request['from'],
+                'to' => $request['to'],
+            ]);
+            return $this->sendResponse('', 'Data Updated Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        } catch (TrainerShiftNotFound $e) {
+            return $this->sendError('Trainer Shift Not Found');
+        }
     }
 
     /**
