@@ -3,6 +3,7 @@
 use App\Http\Controllers\ClientGymSubscriptionController;
 use App\Http\Controllers\ClientTrainerSubscriptionController;
 use App\Http\Controllers\GymSubscriptionPlanController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrainerShiftController;
 use App\Http\Controllers\TrainerSubscriptionPlanController;
 use Illuminate\Foundation\Application;
@@ -20,19 +21,19 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/',[HomeController::class,'index']);
 Route::get('/admin', [AdminController::class, 'generalAdminDashboard']);
 Route::apiResource('/gym/subscriptions',GymSubscriptionPlanController::class);
 Route::apiResource('/gym/subscribe',ClientGymSubscriptionController::class);
