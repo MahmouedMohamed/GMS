@@ -79,16 +79,22 @@ class User extends Authenticatable
     {
         return $this->hasMany(TrainerShift::class, 'trainer_id');
     }
+    public function trainersSubscriptionPlans()
+    {
+        return $this->belongsToMany(TrainerSubscriptionPlan::class, 'clients_trainers_subscriptions', 'client_id', 'subscription_plan_id')
+            ->withPivot('session_from', 'session_to', 'left_sessions')
+            ->withTimestamps();
+    }
     public function clients()
     {
-        return $this->belongsToMany(User::class, 'trainers_clients', 'client_id', 'trainer_id')
-            ->withPivot('session_from', 'session_to', 'left_sessions', 'session_done', 'client_note', 'trainer_note')
+        return $this->belongsToMany(User::class, 'clients_trainers_subscriptions', 'client_id', 'trainer_id')
+            ->withPivot('session_from', 'session_to', 'left_sessions')
             ->withTimestamps();
     }
     public function trainers()
     {
-        return $this->belongsToMany(User::class, 'trainers_clients', 'trainer_id', 'client_id')
-            ->withPivot('session_from', 'session_to', 'left_sessions', 'session_done', 'client_note', 'trainer_note')
+        return $this->belongsToMany(User::class, 'clients_trainers_subscriptions', 'trainer_id', 'client_id')
+            ->withPivot('session_from', 'session_to', 'left_sessions')
             ->withTimestamps();
     }
     public function accessTokens()
