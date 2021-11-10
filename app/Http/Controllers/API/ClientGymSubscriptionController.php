@@ -30,7 +30,9 @@ class ClientGymSubscriptionController extends BaseController
             $user = $this->userExists($request['userId']);
             return $this->sendResponse(
                 $user->gymSubscriptionPlans()
-                    ->select('clients_gym_subscriptions.id', 'gym_subscriptions_plans.id as gym_subscription_plan_id', 'name', 'start', 'number_of_months', 'end')
+                    ->select('clients_gym_subscriptions.id',
+                    'gym_subscriptions_plans.id as gym_subscription_plan_id',
+                    'name', 'start', 'number_of_months', 'end')
                     ->get(),
                 'Gym Subscriptions Retrieved Successfully'
             );
@@ -90,6 +92,7 @@ class ClientGymSubscriptionController extends BaseController
     {
         try {
             $clientGymSubscribedPlan = $this->clientGymSubscriptionExists($id);
+            //ToDo: For Authorization
             $user = $this->userExists($request['userId']);
             $gymSubscriptionPlan = $this->gymSubscriptionPlanExists($request['gymSubscriptionPlanId']);
             switch ($request['request']) {

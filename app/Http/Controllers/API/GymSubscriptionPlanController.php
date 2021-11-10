@@ -116,6 +116,7 @@ class GymSubscriptionPlanController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  String  $id
      * @return \Illuminate\Http\Response
      */
