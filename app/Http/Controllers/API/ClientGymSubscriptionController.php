@@ -119,11 +119,22 @@ class ClientGymSubscriptionController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  String  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, String $id)
     {
-        //
+        try {
+            //ToDo: For Authorization
+            $user = $this->userExists($request['userId']);
+            $clientGymSubscribedPlan = $this->clientGymSubscriptionExists($id);
+            $clientGymSubscribedPlan->delete();
+            return $this->sendResponse('', 'Data Deleted Successfully');
+        } catch (UserNotFound $e) {
+            return $this->sendError('User Doesn\'t Exist');
+        } catch (ClientGymSubscriptionNotFound $e) {
+            return $this->sendError('Client Gym Subscription Not Found');
+        }
     }
 }
