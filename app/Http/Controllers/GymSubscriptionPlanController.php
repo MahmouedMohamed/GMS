@@ -3,12 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\GymSubscriptionPlan;
+use App\Traits\ControllersTraits\GymSubscriptionPlanValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Str;
 
 class GymSubscriptionPlanController extends Controller
 {
+    use GymSubscriptionPlanValidator;
+
+    public function __construct()
+    {
+        $this->middleware('auth', ['only' => ['create']]);
+
+        $this->middleware('auth', ['only' => ['edit']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,19 +28,21 @@ class GymSubscriptionPlanController extends Controller
      */
     public function index()
     {
-        return $this->sendResponse(
-            Cache::remember('gym-subscriptions-plans', 60 * 60 * 24, function () {
-                return GymSubscriptionPlan::select(
-                    'id as ID',
-                    'name as Name',
-                    'number_of_months as Number of Months',
-                    'cost as Cost',
-                    DB::raw('FORMAT(cost - (cost * NVL(discount,0) /100), 2) AS \'Cost After Discount\''),
-                    DB::raw('NVL(CONCAT(discount,\'%\'),\'0%\') AS Discount'),
-                    DB::raw('CASE WHEN `discount` IS NULL OR `discount` = 0 THEN false ELSE true END AS \'Has Discount\''),
-                )->get();
-            }),
-            'Data Retrieved Successfully'
+        return view(
+            'Gym.Subscriptions.index',
+            [
+                'plans' => Cache::remember('gym-subscriptions-plans', 60 * 60 * 24, function () {
+                    return GymSubscriptionPlan::select(
+                        'id as ID',
+                        'name as Name',
+                        'number_of_months as Number of Months',
+                        'cost as Cost',
+                        DB::raw('FORMAT(cost - (cost * NVL(discount,0) /100), 2) AS \'Cost After Discount\''),
+                        DB::raw('NVL(CONCAT(discount,\'%\'),\'0%\') AS Discount'),
+                        DB::raw('CASE WHEN `discount` IS NULL OR `discount` = 0 THEN false ELSE true END AS \'Has Discount\''),
+                    )->get();
+                })
+            ]
         );
     }
 
@@ -39,7 +53,7 @@ class GymSubscriptionPlanController extends Controller
      */
     public function create()
     {
-        //
+        return view('Gym.Subscriptions.create');
     }
 
     /**
@@ -50,7 +64,31 @@ class GymSubscriptionPlanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = $this->validateGymSubscriptionPlanData($request, 'store');
+        if ($validator->fails()) {
+            return Redirect::back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        GymSubscriptionPlan::create([
+            'id' => Str::uuid(),
+            'name' => strval($request['numberOfMonths']) . ' Months Offer',
+            'number_of_months' => $request['numberOfMonths'],
+            'cost' => $request['cost'],
+            'discount' => $request['discount'],
+            'created_by' => Auth()->user()->id,
+        ]);
+        return redirect()->route('gym.subscriptions.index')->with('status', 'Gym Subscription Created Successfully!');
+
+        // return $this->sendResponse(GymSubscriptionPlan::create([
+        //     'id' => Str::uuid(),
+        //     'name' => strval($request['numberOfMonths']) . ' Months Offer',
+        //     'number_of_months' => $request['numberOfMonths'],
+        //     'cost' => $request['cost'],
+        //     'discount' => $request['discount'],
+        //     'created_by' => Auth()->user()->id,
+        // ]), 'Data Created Successfully');
+
     }
 
     /**
@@ -96,5 +134,13 @@ class GymSubscriptionPlanController extends Controller
     public function destroy(GymSubscriptionPlan $gymSubscriptionPlan)
     {
         //
+    }
+    private function validateGymSubscriptionPlan()
+    {
+        return request()->validate([
+            'numberOfMonths' => 'required|integer|min:1',
+            'cost' => 'required|numeric|min:1',
+            'discount' => 'required|numeric|min:0|max:100',
+        ]);
     }
 }
