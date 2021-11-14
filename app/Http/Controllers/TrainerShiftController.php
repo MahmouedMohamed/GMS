@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TrainerShift;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class TrainerShiftController extends Controller
 {
@@ -14,7 +15,11 @@ class TrainerShiftController extends Controller
      */
     public function index()
     {
-        //
+        return view('Trainer.Shifts.index', [
+            'shifts' => Cache::remember('TrainerShifts', 60 * 60 * 24, function () {
+                return TrainerShift::with('trainer:id,name')->get();
+            })
+        ]);
     }
 
     /**
