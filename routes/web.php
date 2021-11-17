@@ -6,6 +6,7 @@ use App\Http\Controllers\GymSubscriptionPlanController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\TrainerShiftController;
 use App\Http\Controllers\TrainerSubscriptionPlanController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -84,5 +85,9 @@ Route::resource('/trainer/shifts', TrainerShiftController::class)->names([
 ]);
 Route::get('/trainer/{id}/shifts', [TrainerShiftController::class, 'getSpecificTrainerShifts'])
     ->name('trainer.shifts.self');
-
-require __DIR__ . '/auth.php';
+Route::get('/login', [AuthController::class,'index']);
+Route::get('/register', [AuthController::class,'registration']);
+Route::post('/login', [AuthController::class,'postLogin'])->name('login');
+Route::post('/register', [AuthController::class,'postRegistration'])->name('register');
+Route::post('/logout', [AuthController::class,'logout']);
+// require __DIR__ . '/auth.php';
