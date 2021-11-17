@@ -84,7 +84,7 @@ class GymSubscriptionPlanController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\GymSubscriptionPlan  $gymSubscriptionPlan
+     * @param  \App\Models\GymSubscriptionPlan  $subscription
      * @return \Illuminate\Http\Response
      */
     public function show(GymSubscriptionPlan $subscription)
@@ -112,7 +112,21 @@ class GymSubscriptionPlanController extends Controller
      */
     public function update(Request $request, GymSubscriptionPlan $subscription)
     {
-        //
+        $validator = $this->validateGymSubscriptionPlanData($request, 'update');
+        if ($validator->fails()) {
+            return Redirect::back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        GymSubscriptionPlan::create([
+            'id' => Str::uuid(),
+            'name' => strval($request['numberOfMonths']) . ' Months Offer',
+            'number_of_months' => $request['numberOfMonths'],
+            'cost' => $request['cost'],
+            'discount' => $request['discount'],
+            'created_by' => Auth()->user()->id,
+        ]);
+        return redirect()->route('gym.subscriptions.index')->with('status', 'Gym Subscription Created Successfully!');
     }
 
     /**
@@ -123,7 +137,8 @@ class GymSubscriptionPlanController extends Controller
      */
     public function destroy(GymSubscriptionPlan $subscription)
     {
-        //
+        $subscription->delete();
+        return redirect()->route('gym.subscriptions.index')->with('status', 'Gym Subscription Deleted Successfully!');
     }
     private function validateGymSubscriptionPlan()
     {
