@@ -35,12 +35,12 @@ class GymSubscriptionPlanController extends Controller
                     return GymSubscriptionPlan::select(
                         'id as ID',
                         'name as Name',
-                        'number_of_months as Number of Months',
+                        'number_of_months as NumberofMonths',
                         'cost as Cost',
-                        DB::raw('FORMAT(cost - (cost * NVL(discount,0) /100), 2) AS \'Cost After Discount\''),
+                        DB::raw('FORMAT(cost - (cost * NVL(discount,0) /100), 2) AS \'CostAfterDiscount\''),
                         DB::raw('NVL(CONCAT(discount,\'%\'),\'0%\') AS Discount'),
-                        DB::raw('CASE WHEN `discount` IS NULL OR `discount` = 0 THEN false ELSE true END AS \'Has Discount\''),
-                    )->get();
+                        DB::raw('CASE WHEN `discount` IS NULL OR `discount` = 0 THEN false ELSE true END AS \'HasDiscount\''),
+                    )->orderBy('NumberofMonths')->get();
                 })
             ]
         );
@@ -79,16 +79,6 @@ class GymSubscriptionPlanController extends Controller
             'created_by' => Auth()->user()->id,
         ]);
         return redirect()->route('gym.subscriptions.index')->with('status', 'Gym Subscription Created Successfully!');
-
-        // return $this->sendResponse(GymSubscriptionPlan::create([
-        //     'id' => Str::uuid(),
-        //     'name' => strval($request['numberOfMonths']) . ' Months Offer',
-        //     'number_of_months' => $request['numberOfMonths'],
-        //     'cost' => $request['cost'],
-        //     'discount' => $request['discount'],
-        //     'created_by' => Auth()->user()->id,
-        // ]), 'Data Created Successfully');
-
     }
 
     /**
@@ -97,7 +87,7 @@ class GymSubscriptionPlanController extends Controller
      * @param  \App\Models\GymSubscriptionPlan  $gymSubscriptionPlan
      * @return \Illuminate\Http\Response
      */
-    public function show(GymSubscriptionPlan $gymSubscriptionPlan)
+    public function show(GymSubscriptionPlan $subscription)
     {
         //
     }
@@ -110,17 +100,17 @@ class GymSubscriptionPlanController extends Controller
      */
     public function edit(GymSubscriptionPlan $gymSubscriptionPlan)
     {
-        //
+        return view('Gym.Subscriptions.edit');
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\GymSubscriptionPlan  $gymSubscriptionPlan
+     * @param  \App\Models\GymSubscriptionPlan  $subscription
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, GymSubscriptionPlan $gymSubscriptionPlan)
+    public function update(Request $request, GymSubscriptionPlan $subscription)
     {
         //
     }
@@ -128,10 +118,10 @@ class GymSubscriptionPlanController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\GymSubscriptionPlan  $gymSubscriptionPlan
+     * @param  \App\Models\GymSubscriptionPlan  $subscription
      * @return \Illuminate\Http\Response
      */
-    public function destroy(GymSubscriptionPlan $gymSubscriptionPlan)
+    public function destroy(GymSubscriptionPlan $subscription)
     {
         //
     }
